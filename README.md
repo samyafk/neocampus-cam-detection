@@ -1,0 +1,1 @@
+# neocampus-cam-detection
