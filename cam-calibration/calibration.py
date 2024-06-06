@@ -3,14 +3,25 @@ import cv2 as cv
 import glob
 import pickle
 import os
-
-
-
+import sys
 
 ################ FIND CHESSBOARD CORNERS - OBJECT POINTS AND IMAGE POINTS #############################
 
-chessboardSize = (9,6)
-frameSize = (1280,720)
+# chessboardSize = (9,6)
+# frameSize = (1280,720)
+# size_of_chessboard_squares_mm = 26.5
+
+# Check if the number of arguments is correct
+if len(sys.argv) != 7:
+    print("Please check the README for more information on the usage of the calibration script.")
+    sys.exit()
+else:
+    camera_type = sys.argv[1]
+    chessboardSize = (int(sys.argv[2]), int(sys.argv[3]))
+    frameSize = (int(sys.argv[4]), int(sys.argv[5]))
+    size_of_chessboard_squares_mm = float(sys.argv[6])
+    
+    
 
 
 # Get the directory of the current file
@@ -18,9 +29,15 @@ curr_path = os.path.dirname(os.path.abspath(__file__))
 # Replace backslashes with forward slashes
 curr_path = curr_path.replace('\\', '/')
 # Create the paths to the source images, results, and parameters
-src_path = curr_path + "/images/"
+src_path = curr_path + "/calibration_images-" + camera_type + "/"
 res_path = curr_path + "/results/"
-params_path = curr_path + "/params/"
+params_path = curr_path + "/params-" + camera_type + "/"
+
+# Check if directory exists
+if not os.path.exists(src_path):
+    print("The source images directory not found. Please check the README for more information.")
+
+
 
 # termination criteria
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
@@ -30,7 +47,6 @@ criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 objp = np.zeros((chessboardSize[0] * chessboardSize[1], 3), np.float32)
 objp[:,:2] = np.mgrid[0:chessboardSize[0],0:chessboardSize[1]].T.reshape(-1,2)
 
-size_of_chessboard_squares_mm = 20
 objp = objp * size_of_chessboard_squares_mm
 
 
@@ -39,7 +55,7 @@ objpoints = [] # 3d point in real world space
 imgpoints = [] # 2d points in image plane.
 
 
-images = glob.glob(src_path + "*.png")
+images = glob.glob(src_path + "*")
 
 
 for image in images:
@@ -59,7 +75,7 @@ for image in images:
         # Draw and display the corners
         cv.drawChessboardCorners(img, chessboardSize, corners2, ret)
         cv.imshow('img', img)
-        cv.waitKey(500)
+        cv.waitKey(200)
     else:
         print("Chessboard not detected! :(")
 
@@ -71,53 +87,14 @@ cv.destroyAllWindows()
 
 ret, cameraMatrix, dist, rvecs, tvecs = cv.calibrateCamera(objpoints, imgpoints, frameSize, None, None)
 
+# Check if directory exists, if not, create it
+if not os.path.exists(params_path):
+    os.makedirs(params_path)
+
 # Save the camera calibration result for later use (we won't worry about rvecs / tvecs)
-pickle.dump((cameraMatrix, dist), open( params_path + "calibration.pkl", "wb" ))
 pickle.dump(cameraMatrix, open( params_path + "cameraMatrix.pkl", "wb" ))
 pickle.dump(dist, open( params_path + "dist.pkl", "wb" ))
 
-
-############## UNDISTORTION #####################################################
-
-img = cv.imread(src_path + 'vlcsnap-2024-06-05-16h03m05s613.png')
-h,  w = img.shape[:2]
-newCameraMatrix, roi = cv.getOptimalNewCameraMatrix(cameraMatrix, dist, (w,h), 1, (w,h))
+print("Calibration done! The camera parameters are saved in the corresponding 'params' folder.")
 
 
-
-# Undistort
-dst = cv.undistort(img, cameraMatrix, dist, None, newCameraMatrix)
-
-# crop the image
-x, y, w, h = roi
-dst = dst[y:y+h, x:x+w]
-cv.imwrite(res_path + 'Result1.png', dst)
-
-
-
-# Undistort with Remapping
-mapx, mapy = cv.initUndistortRectifyMap(cameraMatrix, dist, None, newCameraMatrix, (w,h), 5)
-dst = cv.remap(img, mapx, mapy, cv.INTER_LINEAR)
-
-# crop the image
-x, y, w, h = roi
-dst = dst[y:y+h, x:x+w]
-cv.imwrite(res_path + 'Result2.png', dst)
-
-
-
-
-# Reprojection Error
-mean_error = 0
-
-for i in range(len(objpoints)):
-    imgpoints2, _ = cv.projectPoints(objpoints[i], rvecs[i], tvecs[i], cameraMatrix, dist)
-    error = cv.norm(imgpoints[i], imgpoints2, cv.NORM_L2)/len(imgpoints2)
-    mean_error += error
-
-print( "total error: {}".format(mean_error/len(objpoints)) )
-
-with open(params_path + "dist.pkl", 'rb') as file:
-    my_object = pickle.load(file)
-
-print(my_object)
