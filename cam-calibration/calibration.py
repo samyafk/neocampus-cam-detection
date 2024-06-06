@@ -16,22 +16,20 @@ if len(sys.argv) != 7:
     print("Please check the README for more information on the usage of the calibration script.")
     sys.exit()
 else:
-    camera_type = sys.argv[1]
+    camera_name = sys.argv[1]
     chessboardSize = (int(sys.argv[2]), int(sys.argv[3]))
     frameSize = (int(sys.argv[4]), int(sys.argv[5]))
     size_of_chessboard_squares_mm = float(sys.argv[6])
     
     
-
-
 # Get the directory of the current file
 curr_path = os.path.dirname(os.path.abspath(__file__))
 # Replace backslashes with forward slashes
 curr_path = curr_path.replace('\\', '/')
 # Create the paths to the source images, results, and parameters
-src_path = curr_path + "/calibration_images-" + camera_type + "/"
+src_path = curr_path + "/calibration_images-" + camera_name + "/"
 res_path = curr_path + "/results/"
-params_path = curr_path + "/params-" + camera_type + "/"
+params_path = curr_path + "/params-" + camera_name + "/"
 
 # Check if directory exists
 if not os.path.exists(src_path):
