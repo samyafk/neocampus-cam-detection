@@ -13,7 +13,7 @@ where:
 - camera_name: the name of the camera (e.g. bullet, 360, etc.)
 - m,n: the number of inner corners in the chessboard (e.g. 9,6)
 - width,height: the width and height of the image in pixels (e.g. 1280,720)
-- square_dimension: the dimension of the square in the chessboard in mm (e.g. 20)
+- square_dimension: the dimension of the square in the chessboard in mm (e.g. 26.5)
 ```
 ## IMPORTANT
 

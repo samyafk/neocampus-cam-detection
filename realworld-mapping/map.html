@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    
+        <script>
+            L_NO_TOUCH = false;
+            L_DISABLE_3D = false;
+        </script>
+    
+    <style>html, body {width: 100%;height: 100%;margin: 0;padding: 0;}</style>
+    <style>#map {position:absolute;top:0;bottom:0;right:0;left:0;}</style>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_1861e918f354845675bdac6cbe67566c {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+        
+</head>
+<body>
+    
+    
+            <div class="folium-map" id="map_1861e918f354845675bdac6cbe67566c" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_1861e918f354845675bdac6cbe67566c = L.map(
+                "map_1861e918f354845675bdac6cbe67566c",
+                {
+                    center: [43.56157183091563, 1.4640376652548863],
+                    crs: L.CRS.EPSG3857,
+                    zoom: 19,
+                    zoomControl: true,
+                    preferCanvas: false,
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_fc4314019a897029dd97490e35dd037e = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {"attribution": "Esri", "detectRetina": false, "maxNativeZoom": 18, "maxZoom": 18, "minZoom": 0, "noWrap": false, "opacity": 1, "subdomains": "abc", "tms": false}
+            );
+        
+    
+            tile_layer_fc4314019a897029dd97490e35dd037e.addTo(map_1861e918f354845675bdac6cbe67566c);
+        
+    
+            var circle_edfe38d3dc8d786877742a9205e81878 = L.circle(
+                [43.56157183091563, 1.4640376652548863],
+                {"bubblingMouseEvents": true, "color": "black", "dashArray": null, "dashOffset": null, "fill": true, "fillColor": "yellow", "fillOpacity": 0.6, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "opacity": 1, "radius": 2, "stroke": true, "weight": 1}
+            ).addTo(map_1861e918f354845675bdac6cbe67566c);
+        
+    
+        var popup_af572de5e3e44650250945f6f00bddc9 = L.popup({"maxWidth": "100%"});
+
+        
+            
+                var html_68bf5b731d81bd2a64762a183429a608 = $(`<div id="html_68bf5b731d81bd2a64762a183429a608" style="width: 100.0%; height: 100.0%;">2 meters</div>`)[0];
+                popup_af572de5e3e44650250945f6f00bddc9.setContent(html_68bf5b731d81bd2a64762a183429a608);
+            
+        
+
+        circle_edfe38d3dc8d786877742a9205e81878.bindPopup(popup_af572de5e3e44650250945f6f00bddc9)
+        ;
+
+        
+    
+    
+            circle_edfe38d3dc8d786877742a9205e81878.bindTooltip(
+                `<div>
+                     Coucou!
+                 </div>`,
+                {"sticky": true}
+            );
+        
+</script>
+</html>

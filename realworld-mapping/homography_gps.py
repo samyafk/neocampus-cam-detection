@@ -1,6 +1,5 @@
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 import pickle
 import os
 import sys
@@ -12,7 +11,7 @@ if len(sys.argv) != 4:
 else:
     camera_name = sys.argv[1]
     camera_img_name = sys.argv[2]
-    map_img_name = sys.argv[3]
+    csv_name = sys.argv[3]
 
 # Get the directory of the current file
 curr_path = os.path.dirname(os.path.abspath(__file__))
@@ -21,7 +20,7 @@ parent_path = parent_directory = os.path.abspath(os.path.join(curr_path, os.pard
 curr_path = curr_path.replace('\\', '/')
 parent_path = parent_path.replace('\\', '/')
 # Create the paths to the source images, results, and parameters
-images_path = curr_path + "/images/"
+setup_path = curr_path + "/setup-data/"
 params_path = curr_path + "/params-" + camera_name + "/"
 calib_params_path = parent_path + "/cam-calibration/params-" + camera_name + "/"
 print(parent_path)
@@ -38,61 +37,51 @@ if not os.path.exists(params_path):
     os.makedirs(params_path)
 
 # Load images
-img_cam = cv.imread(images_path + camera_img_name)
-img_map = cv.imread(images_path + map_img_name)
+img_cam = cv.imread(setup_path + camera_img_name)
 
 # Vérifier que les images ont été chargées correctement
-if img_cam is None or img_map is None:
+if img_cam is None:
     print("Erreur lors du chargement des images")
     exit()
 
 
 # Variables globales pour stocker les points d'image
-points_src = []
-points_tgt = []
+image_points = []
+gps_points = np.loadtxt(setup_path + csv_name, delimiter=',')
+print(gps_points)
 
 # Fonction de callback pour la sélection des points sur l'image source
 def select_points_src(event, x, y, flags, param):
-    global points_src
+    global image_points
     if event == cv.EVENT_LBUTTONDOWN:
-        points_src.append((x, y))
+        image_points.append((x, y))
         print(f"Point source sélectionné: ({x}, {y})")
-
-# Fonction de callback pour la sélection des points sur l'image cible
-def select_points_tgt(event, x, y, flags, param):
-    global points_tgt
-    if event == cv.EVENT_LBUTTONDOWN:
-        points_tgt.append((x, y))
-        print(f"Point cible sélectionné: ({x}, {y})")
 
 # Affichage des images et sélection des points
 cv.namedWindow('Image Source')
 cv.setMouseCallback('Image Source', select_points_src)
-cv.namedWindow('Image Cible')
-cv.setMouseCallback('Image Cible', select_points_tgt)
 
 print("Sélectionnez 4 points ou plus sur chaque image en cliquant. Appuyez sur 'q' pour terminer la sélection.")
 while True:
     cv.imshow('Image Source', img_cam)
-    cv.imshow('Image Cible', img_map)
     key = cv.waitKey(1) & 0xFF
-    if key == ord('q'):
+    if key == ord('q') or len(image_points) == len(gps_points):
         break
 
 cv.destroyAllWindows()
 
 # Vérifier que le nombre de points sélectionnés est le même pour les deux images
-if len(points_src) != len(points_tgt):
-    print("Le nombre de points sélectionnés dans chaque image doit être le même.")
+if len(image_points) != len(gps_points):
+    print("Vous devez sélectionner {} points".format(len(gps_points)))
     exit()
 
 # Conversion en numpy arrays
-points_src_np = np.array(points_src, dtype=np.float32)
-points_tgt_np = np.array(points_tgt, dtype=np.float32)
+points_image_np = np.array(image_points, dtype=np.float32)
+points_gps_np = np.array(gps_points, dtype=np.float32)
 
 # Calcul de l'homographie
-H, _ = cv.findHomography(points_src_np, points_tgt_np)
+H, _ = cv.findHomography(points_image_np, points_gps_np)
 
 # Save the homography matrix result for later use
-pickle.dump(H, open( params_path + "homographyMatrix.pkl", "wb" ))
+pickle.dump(H, open( params_path + "homographyMatrix_gps.pkl", "wb" ))
 
