@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <title>Map</title>
+  </head>
+  <body style="display: flex; flex-direction: column; align-items: center">
+    <div id="map" style="height: 95vh; width: 90vw"></div>
+  </body>
+  <script>
+    var map = L.map("map").setView([43.561355, 1.463578], 19);
+    L.tileLayer(
+      "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.{ext}",
+      {
+        minZoom: 0,
+        maxZoom: 20,
+        attribution:
+          '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        ext: "png",
+      }
+    ).addTo(map);
+
+    mapMarkers = [];
+
+    var source = new EventSource("topic/geodata");
+    source.addEventListener(
+      "message",
+      function (e) {
+        console.log("Message: ");
+        obj = JSON.parse(e.data);
+        console.log(obj);
+
+        if ((obj.type = "navette")) {
+          for (var i = 0; i < mapMarkers.length; i++) {
+            map.removeLayer(mapMarkers[i]);
+          }
+          marker = L.marker([obj.latitude, obj.longitude]).addTo(map);
+          mapMarkers.push(marker);
+        }
+      },
+      false
+    );
+  </script>
+</html>

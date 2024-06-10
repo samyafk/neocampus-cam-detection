@@ -1,0 +1,15 @@
+pip install pykafka
+pip install folium
+pip install flask
+
+
+java 8 se jdk
+add java directory to path
+
+kafka_2.13-3.7.0
+add kafka/bin/windows/kafka-topics.bat to path
+https://www.youtube.com/watch?v=MuLMxeI7Ytk&list=PL2UmzTIzxgL7Bq-mW--vtsM2YFF9GqhVB
+bootstrap-server on localhost:9092
+
+
+

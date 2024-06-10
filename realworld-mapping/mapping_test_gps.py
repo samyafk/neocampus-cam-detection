@@ -77,6 +77,7 @@ while True:
         popup="{} meters".format(radius),
         tooltip="Coucou!",
     ).add_to(m)
+    m
     # Save the map as an HTML file
     m.save("map.html")
 
