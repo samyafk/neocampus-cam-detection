@@ -46,15 +46,24 @@ if not vcap.isOpened():
 print(f"Connected to the RTSP stream in {connection_time:.2f} seconds")
 
 # Get the width and height of the frames
-frame_width = int(vcap.get(cv2.CAP_PROP_FRAME_WIDTH))
-frame_height = int(vcap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 fps = int(vcap.get(cv2.CAP_PROP_FPS))
 
 # Define the codec and create a VideoWriter object
 # 'XVID' is the codec. You can use other codecs like 'MJPG', 'X264', etc.
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
 output_file = '15_sec_cam_test.avi'
-out = cv2.VideoWriter(output_file, fourcc, fps, (frame_width, frame_height))
+
+ret, frame = vcap.read()
+if not ret:
+    print("Error: Unable to read frame from video stream")
+    vcap.release()
+    exit()
+
+corrected_frame = undistort_image(frame, cameraMatrix, dist)
+corrected_frame_width = corrected_frame.shape[1]
+corrected_frame_height = corrected_frame.shape[0]
+
+out = cv2.VideoWriter(output_file, fourcc, fps, (corrected_frame_width, corrected_frame_height))
 
 print(f"Recording video to {output_file}")
 
