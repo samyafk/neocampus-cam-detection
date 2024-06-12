@@ -5,6 +5,9 @@ import sys
 import pickle
 
 
+############################################################
+################### Getting the PATHS ######################
+############################################################
 
 
 # Check if the number of arguments is correct
@@ -13,7 +16,6 @@ if len(sys.argv) != 2:
     sys.exit()
 else:
     params_path = sys.argv[1]
-
 
 with open(params_path + "dist.pkl", 'rb') as file:
     dist = pickle.load(file)
@@ -24,16 +26,16 @@ with open(params_path + "cameraMatrix.pkl", 'rb') as file:
 with open(params_path + "homographyMatrix_gps.pkl", 'rb') as file:
     H = pickle.load(file)
 
+##################################################################
+################### Getting the RTSP STREAM ######################
+##################################################################
+
 # Define the RTSP stream URL
 rtsp_url = "rtsp://cam-91e5:554/profile2/media.smp"
 
-# Measure the start time
-start_time_connect = time.time()
-
 # Open the RTSP stream
+start_time_connect = time.time()
 vcap = cv2.VideoCapture(rtsp_url)
-
-# Measure the end time
 end_time_connect = time.time()
 
 # Calculate the connection time
@@ -45,7 +47,7 @@ if not vcap.isOpened():
 
 print(f"Connected to the RTSP stream in {connection_time:.2f} seconds")
 
-# Get the width and height of the frames
+# Get the frame rate of the video stream
 fps = int(vcap.get(cv2.CAP_PROP_FPS))
 
 # Define the codec and create a VideoWriter object
@@ -88,7 +90,6 @@ while True:
 
 # Measure the end time for recording
 recording_end_time = time.time()
-
 record_time = recording_end_time - recording_start_time
 
 print(f"Recorded for {record_time:.2f} seconds")
