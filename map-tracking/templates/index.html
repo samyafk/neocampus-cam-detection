@@ -15,8 +15,8 @@
 
     <title>Map</title>
   </head>
-  <body style="display: flex; flex-direction: column; align-items: center">
-    <div id="map" style="height: 95vh; width: 90vw"></div>
+  <body>
+    <div id="map" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
   </body>
   <script>
     var map = L.map("map").setView([43.561355, 1.463578], 19);
@@ -30,6 +30,14 @@
         ext: "png",
       }
     ).addTo(map);
+
+    var navetteIcon = L.icon({
+      iconUrl: '/static/navette.png',
+  
+      iconSize:     [64, 64], // size of the icon
+      shadowSize:   [50, 64], // size of the shadow
+      iconAnchor:   [32, 32], // point of the icon which will correspond to marker's location
+  });
 
     mapMarkers = [];
 
@@ -45,7 +53,7 @@
           for (var i = 0; i < mapMarkers.length; i++) {
             map.removeLayer(mapMarkers[i]);
           }
-          marker = L.marker([obj.latitude, obj.longitude]).addTo(map);
+          marker = L.marker([obj.latitude, obj.longitude], {icon: navetteIcon}).addTo(map);
           mapMarkers.push(marker);
         }
       },

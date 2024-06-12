@@ -1,0 +1,17 @@
+Create a topic:
+kafka-topics.bat --create --bootstrap-server localhost:9092 --partitions 1 --replication-factor 1 --topic topic_name
+
+Describe topic:
+kafka-topics.bat --describe --bootstrap-server localhost:9092 --topic topic_name    
+
+Consumer:
+kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic topic_name --from-beginning
+
+Producer:
+kafka-console-producer.bat --broker-list localhost:9092 --topic topic_name
+
+Start Zookeeper:
+zookeeper-server-start.bat ..\..\config\zookeeper.properties
+
+Start Kafka:
+kafka-server-start.bat ..\..\config\server.properties
