@@ -25,7 +25,7 @@ while i < len(coordinates):
     
     message = json.dumps(data)
     producer.produce(message.encode('ascii'))
-    # sleep(0.5)
+    sleep(0.5)
     
     
     if i == len(coordinates) - 1:
