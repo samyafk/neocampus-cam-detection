@@ -1,0 +1,5 @@
+SUB
+mosquitto_sub -h autocampus.fr -p 1883 -u test -P test -t TestTopic/testStage/
+
+PUB
+mosquitto_pub -h autocampus.fr -p 1883 -u test -P test -t TestTopic/testStage/ -m blablabla

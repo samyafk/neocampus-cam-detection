@@ -16,32 +16,29 @@
     <title>Map</title>
   </head>
   <body>
-    <div id="map" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0;"></div>
+    <div
+      id="map"
+      style="position: absolute; top: 0; right: 0; bottom: 0; left: 0"
+    ></div>
   </body>
   <script>
-    var map = L.map("map").setView([43.561355, 1.463578], 19);
-    L.tileLayer(
-      "https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.{ext}",
-      {
-        minZoom: 0,
-        maxZoom: 20,
-        attribution:
-          '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://www.stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-        ext: "png",
-      }
-    ).addTo(map);
+    var map = L.map("map").setView([43.561854, 1.464059], 19);
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
     var navetteIcon = L.icon({
-      iconUrl: '/static/navette.png',
-  
-      iconSize:     [64, 64], // size of the icon
-      shadowSize:   [50, 64], // size of the shadow
-      iconAnchor:   [32, 32], // point of the icon which will correspond to marker's location
-  });
+      iconUrl: "/static/car.png",
+
+      iconSize: [50, 50], // size of the icon
+      shadowSize: [50, 64], // size of the shadow
+    });
 
     mapMarkers = [];
 
-    var source = new EventSource("topic/geodata");
+    var source = new EventSource("/messages");
     source.addEventListener(
       "message",
       function (e) {
@@ -53,7 +50,9 @@
           for (var i = 0; i < mapMarkers.length; i++) {
             map.removeLayer(mapMarkers[i]);
           }
-          marker = L.marker([obj.latitude, obj.longitude], {icon: navetteIcon}).addTo(map);
+          marker = L.marker([obj.latitude, obj.longitude], {
+            icon: navetteIcon,
+          }).addTo(map);
           mapMarkers.push(marker);
         }
       },
