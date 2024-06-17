@@ -3,6 +3,11 @@ import time
 from undistort import undistort_image
 import sys
 import pickle
+from ultralytics import YOLO
+import paho.mqtt.client as mqtt
+import json
+
+
 
 
 ############################################################
@@ -31,7 +36,21 @@ with open(params_path + "homographyMatrix_gps.pkl", 'rb') as file:
 ##################################################################
 
 # Define the RTSP stream URL
-rtsp_url = "rtsp://cam-91e5:554/profile2/media.smp"
+rtsp_url = "rtsp://serveur_rtsp:8554/mystream"
+
+# Configuration MQTT
+mqtt_broker = "autocampus.fr"  # Remplacez par votre broker MQTT
+mqtt_port = 1883
+mqtt_topic = "TestTopic/testStage2/"
+mqtt_username = "test"
+mqtt_password = "test"
+
+# Initialiser le client MQTT
+client = mqtt.Client()
+client.username_pw_set(mqtt_username, mqtt_password)
+client.connect(mqtt_broker, mqtt_port, 60)
+
+
 
 # Open the RTSP stream
 start_time_connect = time.time()
@@ -69,6 +88,10 @@ out = cv2.VideoWriter(output_file, fourcc, fps, (corrected_frame_width, correcte
 
 print(f"Recording video to {output_file}")
 
+model = YOLO("/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weights/best.pt")  # Vous pouvez choisir un modèle différent selon vos besoins
+
+
+
 # Measure the start time for recording
 recording_start_time = time.time()
 
@@ -82,11 +105,14 @@ while True:
     
     # Write the frame to the output file
     out.write(corrected_frame)
+
+    results = model.track(corrected_frame)
     
+    publish_results(results)
     # Check if 15 seconds have passed
-    if time.time() - recording_start_time >= 15:
-        print("Recording complete: 15 seconds elapsed")
-        break
+    #if time.time() - recording_start_time >= 15:
+    #    print("Recording complete: 15 seconds elapsed")
+    #    break
 
 # Measure the end time for recording
 recording_end_time = time.time()
@@ -101,3 +127,28 @@ out.release()
 cv2.destroyAllWindows()
 
 print(f"Video recording stopped. Saved to {output_file}")
+
+
+def publish_results(results):
+    for result in results:
+        boxes_data = []
+        for box in result.boxes:
+            
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            # box.conf contient la confidence
+            conf = box.conf[0]
+            
+            cls = box.cls[0]
+
+            box_data = {
+                'x1': x1,
+                'y1': y1,
+                'x2': x2,
+                'y2': y2,
+                'confidence': float(conf),
+                'class': int(cls)
+            }
+            boxes_data.append(box_data)
+
+        message = json.dumps(boxes_data)
+        client.publish(mqtt_topic, message)
