@@ -91,7 +91,7 @@ model = YOLO("/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weig
 
 def publish_results(results):
     for result in results:
-        boxes_data = []
+        boxes_data = {}
         for box in result.boxes:
             
             x, y, w, h = box.xywh[0].tolist()
