@@ -92,8 +92,10 @@ model = YOLO("/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weig
 def publish_results(results):
     for result in results:
         boxes_data = {}
+        i = 0
         for box in result.boxes:
-            ident = "id"
+
+            ident = "id" + i
             x, y, w, h = box.xywh[0].tolist()
             # box.conf contient la confidence
             conf = box.conf[0]
@@ -108,7 +110,7 @@ def publish_results(results):
                 'class': cls
             }
             boxes_data[ident] = box_data
-
+            i += 1
         message = json.dumps(boxes_data)
         client.publish(mqtt_topic, message)
 
