@@ -95,7 +95,7 @@ def publish_results(results):
         i = 0
         for box in result.boxes:
 
-            ident = "id" + i
+            ident = "id" + str(i)
             x, y, w, h = box.xywh[0].tolist()
             # box.conf contient la confidence
             conf = box.conf[0]
@@ -129,7 +129,7 @@ while True:
     # Write the frame to the output file
     #out.write(corrected_frame)
 
-    results = model.track(corrected_frame)
+    results = model.track(corrected_frame, imgsz=1280)
     
     publish_results(results)
     # Check if 15 seconds have passed
