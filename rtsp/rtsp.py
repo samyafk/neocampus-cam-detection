@@ -117,6 +117,7 @@ def publish_results(results):
 
 # Measure the start time for recording
 recording_start_time = time.time()
+last_published_time = recording_start_time
 
 while True:
     ret, frame = vcap.read()
@@ -131,7 +132,11 @@ while True:
 
     results = model.track(corrected_frame, imgsz=1280)
     
-    publish_results(results)
+    current_time = time.time()
+    # Check if one second has passed since the last publication
+    if current_time - last_published_time >= 1:
+        publish_results(results)
+        last_published_time = current_time
     # Check if 15 seconds have passed
     #if time.time() - recording_start_time >= 15:
     #    print("Recording complete: 15 seconds elapsed")
