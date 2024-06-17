@@ -130,7 +130,7 @@ while True:
     # Write the frame to the output file
     #out.write(corrected_frame)
 
-    results = model.track(corrected_frame)
+    results = model.track(corrected_frame, imgsz=1280)
     
     current_time = time.time()
     # Check if one second has passed since the last publication
