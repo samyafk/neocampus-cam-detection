@@ -30,6 +30,13 @@
     }).addTo(map);
 
     var navetteIcon = L.icon({
+      iconUrl: "/static/navette.png",
+
+      iconSize: [50, 50], // size of the icon
+      shadowSize: [50, 64], // size of the shadow
+    });
+
+    var personIcon = L.icon({
       iconUrl: "/static/car.png",
 
       iconSize: [50, 50], // size of the icon
@@ -37,6 +44,7 @@
     });
 
     mapMarkers = [];
+    // mapMarkers_person = [];
 
     var source = new EventSource("/messages");
     source.addEventListener(
@@ -45,13 +53,22 @@
         console.log("Message: ");
         obj = JSON.parse(e.data);
         console.log(obj);
+        for (var i = 0; i < mapMarkers.length; i++) {
+          map.removeLayer(mapMarkers[i]);
+        }
+        for (var key in obj) {
+          // console.log(key + " -> " + key);
+          
 
-        if ((obj.type = "navette")) {
-          for (var i = 0; i < mapMarkers.length; i++) {
-            map.removeLayer(mapMarkers[i]);
-          }
-          marker = L.marker([obj.latitude, obj.longitude], {
-            icon: navetteIcon,
+          var Icon = L.icon({
+            iconUrl: "/static/" + obj[key].class + ".png",
+
+            iconSize: [50, 50], // size of the icon
+            shadowSize: [50, 64], // size of the shadow
+          });
+          
+          marker = L.marker([obj[key].latitude, obj[key].longitude], {
+            icon: Icon,
           }).addTo(map);
           mapMarkers.push(marker);
         }

@@ -5,14 +5,21 @@ import paho.mqtt.client as mqtt
 
 
 
-###############################################################
-########################## JSON FILE ##########################
-###############################################################
+################################################################
+########################## JSON FILES ##########################
+################################################################
 input_file = open('intinerary.json')
 json_array = json.load(input_file)
 coordinates = json_array['features'][0]['geometry']['coordinates']
 data = {}
-data['type'] = "navette"
+data['vehicule_1'] = {}
+data['vehicule_1']['class'] = "navette"
+
+input_file_person = open('intinerary_person.json')
+json_array_person = json.load(input_file_person)
+coordinates_person = json_array_person['features'][0]['geometry']['coordinates']
+data['vehicule_2'] = {}
+data['vehicule_2']['class'] = "person"
 
 
 
@@ -44,11 +51,14 @@ client.loop_start()
 
 try:
     i = 0
-    while i < len(coordinates):
-        data['id'] = i
-        data['timestamp'] = str(datetime.now())
-        data['latitude'] = coordinates[i][1]
-        data['longitude'] = coordinates[i][0]
+    min = min(len(coordinates), len(coordinates_person))
+    while i < min:
+        # data['id'] = i
+        # data['timestamp'] = str(datetime.now())
+        data['vehicule_1']['latitude'] = coordinates[i][1]
+        data['vehicule_1']['longitude'] = coordinates[i][0]
+        data['vehicule_2']['latitude'] = coordinates_person[i][1]
+        data['vehicule_2']['longitude'] = coordinates_person[i][0]
 
         message = json.dumps(data)
         result = client.publish(topic, message)
@@ -57,7 +67,7 @@ try:
         if status != 0:
             print("Échec de l'envoi du message!")
             
-        if i == len(coordinates) - 1:
+        if i == min - 1:
             i = 0
         else:
             i += 1

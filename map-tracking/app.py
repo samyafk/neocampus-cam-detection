@@ -11,7 +11,7 @@ app = Flask(__name__)
 ############################################################
 broker = "autocampus.fr"
 port = 1883
-topic = "TestTopic/testStage/"
+topic = "TestTopic/testStage2/"
 username = "test"
 password = "test"
 messages = []
