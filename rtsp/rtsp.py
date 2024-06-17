@@ -6,8 +6,7 @@ import pickle
 from ultralytics import YOLO
 import paho.mqtt.client as mqtt
 import json
-
-
+from mapping import transform_point
 
 
 ############################################################
@@ -71,8 +70,8 @@ fps = int(vcap.get(cv2.CAP_PROP_FPS))
 
 # Define the codec and create a VideoWriter object
 # 'XVID' is the codec. You can use other codecs like 'MJPG', 'X264', etc.
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
-output_file = '15_sec_cam_test.avi'
+#fourcc = cv2.VideoWriter_fourcc(*'XVID')
+#output_file = '15_sec_cam_test.avi'
 
 ret, frame = vcap.read()
 if not ret:
@@ -84,9 +83,9 @@ corrected_frame = undistort_image(frame, cameraMatrix, dist)
 corrected_frame_width = corrected_frame.shape[1]
 corrected_frame_height = corrected_frame.shape[0]
 
-out = cv2.VideoWriter(output_file, fourcc, fps, (corrected_frame_width, corrected_frame_height))
+#out = cv2.VideoWriter(output_file, fourcc, fps, (corrected_frame_width, corrected_frame_height))
 
-print(f"Recording video to {output_file}")
+#print(f"Recording video to {output_file}")
 
 model = YOLO("/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weights/best.pt")  # Vous pouvez choisir un modèle différent selon vos besoins
 
@@ -95,19 +94,16 @@ def publish_results(results):
         boxes_data = []
         for box in result.boxes:
             
-            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            x, y, w, h = box.xywh[0].tolist()
             # box.conf contient la confidence
             conf = box.conf[0]
             
             cls = box.cls[0]
-
+            lat, long = transform_point((x - h, y), H)
             box_data = {
-                'x1': x1,
-                'y1': y1,
-                'x2': x2,
-                'y2': y2,
-                'confidence': float(conf),
-                'class': int(cls)
+                'latitude': lat,
+                'longitude': long,
+                'type': int(cls)
             }
             boxes_data.append(box_data)
 
@@ -127,7 +123,7 @@ while True:
     corrected_frame = undistort_image(frame, cameraMatrix, dist)
     
     # Write the frame to the output file
-    out.write(corrected_frame)
+    #out.write(corrected_frame)
 
     results = model.track(corrected_frame)
     
@@ -146,9 +142,9 @@ print(f"Recorded for {record_time:.2f} seconds")
 
 # Release the video capture and writer objects
 vcap.release()
-out.release()
+#out.release()
 cv2.destroyAllWindows()
 
-print(f"Video recording stopped. Saved to {output_file}")
+#print(f"Video recording stopped. Saved to {output_file}")
 
 
