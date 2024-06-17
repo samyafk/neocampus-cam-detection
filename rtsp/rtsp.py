@@ -93,19 +93,21 @@ def publish_results(results):
     for result in results:
         boxes_data = {}
         for box in result.boxes:
-            
+            ident = "id"
             x, y, w, h = box.xywh[0].tolist()
             # box.conf contient la confidence
             conf = box.conf[0]
             
             cls = box.cls[0]
+            cls_labels = ['bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck']
+            cls = cls_labels[int(cls)]
             lat, long = transform_point((x - h, y), H)
             box_data = {
                 'latitude': float(lat),
                 'longitude': float(long),
-                'class': int(cls)
+                'class': cls
             }
-            boxes_data.append(box_data)
+            boxes_data[ident] = box_data
 
         message = json.dumps(boxes_data)
         client.publish(mqtt_topic, message)
