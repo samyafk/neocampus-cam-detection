@@ -90,6 +90,29 @@ print(f"Recording video to {output_file}")
 
 model = YOLO("/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weights/best.pt")  # Vous pouvez choisir un modèle différent selon vos besoins
 
+def publish_results(results):
+    for result in results:
+        boxes_data = []
+        for box in result.boxes:
+            
+            x1, y1, x2, y2 = box.xyxy[0].tolist()
+            # box.conf contient la confidence
+            conf = box.conf[0]
+            
+            cls = box.cls[0]
+
+            box_data = {
+                'x1': x1,
+                'y1': y1,
+                'x2': x2,
+                'y2': y2,
+                'confidence': float(conf),
+                'class': int(cls)
+            }
+            boxes_data.append(box_data)
+
+        message = json.dumps(boxes_data)
+        client.publish(mqtt_topic, message)
 
 
 # Measure the start time for recording
@@ -129,26 +152,3 @@ cv2.destroyAllWindows()
 print(f"Video recording stopped. Saved to {output_file}")
 
 
-def publish_results(results):
-    for result in results:
-        boxes_data = []
-        for box in result.boxes:
-            
-            x1, y1, x2, y2 = box.xyxy[0].tolist()
-            # box.conf contient la confidence
-            conf = box.conf[0]
-            
-            cls = box.cls[0]
-
-            box_data = {
-                'x1': x1,
-                'y1': y1,
-                'x2': x2,
-                'y2': y2,
-                'confidence': float(conf),
-                'class': int(cls)
-            }
-            boxes_data.append(box_data)
-
-        message = json.dumps(boxes_data)
-        client.publish(mqtt_topic, message)
