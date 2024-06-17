@@ -101,8 +101,8 @@ def publish_results(results):
             cls = box.cls[0]
             lat, long = transform_point((x - h, y), H)
             box_data = {
-                'latitude': lat,
-                'longitude': long,
+                'latitude': float(lat),
+                'longitude': float(long),
                 'class': int(cls)
             }
             boxes_data.append(box_data)
