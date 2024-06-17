@@ -103,7 +103,7 @@ def publish_results(results):
             box_data = {
                 'latitude': lat,
                 'longitude': long,
-                'type': int(cls)
+                'class': int(cls)
             }
             boxes_data.append(box_data)
 
