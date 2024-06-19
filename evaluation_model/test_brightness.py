@@ -22,10 +22,10 @@ def adjust_contrast(frame, alpha):
     return frame_contrast
 
 def yolo_detection(frame, model, confidence_threshold=0.5):
-    results = model(frame)
+    results = model.predict(frame)
     boxes = results[0].boxes.xyxy.cpu().numpy()  # Format: (x1, y1, x2, y2)
-    confidences = results.boxes.conf.numpy()
-    class_ids = results.boxes.cls.numpy().astype(int)
+    confidences = results[0].boxes.conf.cpu().numpy()
+    class_ids = results[0].boxes.cls.cpu().numpy().astype(int)
     
     indices = np.where(confidences >= confidence_threshold)[0]
     return indices, boxes, confidences, class_ids
@@ -88,7 +88,12 @@ for brightness in brightness_values:
                 frame = adjust_contrast(frame, contrast)
 
                 # Détection YOLO
-                indices, boxes, confidences, class_ids = yolo_detection(frame, model)
+                results = model.predict(frame)
+                boxes = results[0].boxes.xyxy.cpu().numpy()  # Format: (x1, y1, x2, y2)
+                confidences = results[0].boxes.conf.cpu().numpy()
+                class_ids = results[0].boxes.cls.cpu().numpy().astype(int)
+                
+                indices = np.where(confidences >= 0.5)[0]
 
                 # Ajouter les classes détectées à y_pred
                 y_pred.extend([class_ids[i] for i in indices])
@@ -105,4 +110,3 @@ for brightness in brightness_values:
 # Visualiser les résultats
 plot_metrics(precision_scores, brightness_values, "Brightness", "Precision", "precision_vs_brightness.png")
 plot_metrics(recall_scores, contrast_values, "Contrast", "Recall", "recall_vs_contrast.png")
-
