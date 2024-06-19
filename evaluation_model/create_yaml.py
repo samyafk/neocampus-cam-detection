@@ -17,7 +17,8 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
                 'train': 'images',  # Assuming we use the 'images' folder for validation as well
                 'val': 'images',
                 'test': 'images',
-                'names': ['bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck']  # Replace with actual class names
+                'nc': 8,
+                'names': {'bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck'}  # Replace with actual class names
             }
             
             yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
