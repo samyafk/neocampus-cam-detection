@@ -39,5 +39,16 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
             with open(yaml_file, 'w') as f:
                 yaml.dump(yaml_content, f)
 
+            # Charger le YAML pour le reformatter en ligne
+            with open(yaml_file, 'r') as f:
+                content = yaml.load(f)
+
+            # Reformater la liste des noms en ligne
+            content['names'] = '[' + ', '.join(f"'{name}'" for name in content['names']) + ']'
+
+            # Sauvegarder le YAML reformatté
+            with open(yaml_file, 'w') as f:
+                yaml.dump(content, f)
+
 # Créer les fichiers YAML pour chaque ensemble d'images modifiées
 create_yaml_files(output_base_path, brightness_values, contrast_values)
