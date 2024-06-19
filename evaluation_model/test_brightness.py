@@ -1,5 +1,5 @@
-import os
 from ultralytics import YOLO
+import os
 
 # Charger le modèle YOLOv8
 model = YOLO('/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weights/best.pt')
@@ -15,9 +15,10 @@ for brightness in brightness_values:
     for contrast in contrast_values:
         output_folder = f"brightness_{brightness}_contrast_{contrast}"
         dataset_path = os.path.join(output_base_path, output_folder)
+        yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
         
         # Évaluer le modèle
-        result = model.val(data=dataset_path, split='images')
+        result = model.val(data=yaml_file)
         results[(brightness, contrast)] = result
 
 # Afficher les résultats

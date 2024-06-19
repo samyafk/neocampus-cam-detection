@@ -2,7 +2,7 @@ import os
 import yaml
 
 
-output_base_path = "/usr/src/ultralytics/videos/datasets/dataset4_mix/test_modified"
+output_base_path = "/usr/src/ultralytics/videos/datasets/data_modified"
 brightness_values = [-50, 0, 50]
 contrast_values = [0.5, 1.0, 1.5]
 # Créer les fichiers YAML de configuration
