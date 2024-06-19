@@ -1,6 +1,5 @@
 import os
 from ruamel.yaml import YAML
-from ruamel.yaml.scalarstring import SingleQuotedScalarString
 
 output_base_path = "/usr/src/ultralytics/videos/datasets/data_modified"
 brightness_values = [-50, 0, 50]
@@ -28,21 +27,20 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
             yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
             os.makedirs(os.path.dirname(yaml_file), exist_ok=True)
             
-            # Ecrire le contenu YAML
+            # Écrire le reste du contenu YAML
             with open(yaml_file, 'w') as f:
                 yaml.dump(yaml_content, f)
 
-            # Charger le YAML pour le reformatter en ligne
+            # Reformater manuellement la partie des noms
             with open(yaml_file, 'r') as f:
-                content = yaml.load(f)
+                lines = f.readlines()
 
-            # Reformater la liste des noms en ligne
-            names_list = '[' + ', '.join(f"'{name}'" for name in yaml_content['names']) + ']'
-            content['names'] = names_list
-
-            # Sauvegarder le YAML reformatté en ligne
             with open(yaml_file, 'w') as f:
-                yaml.dump(content, f)
+                for line in lines:
+                    if line.startswith("names:"):
+                        f.write("names: ['bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck']\n")
+                    else:
+                        f.write(line)
 
 # Créer les fichiers YAML pour chaque ensemble d'images modifiées
 create_yaml_files(output_base_path, brightness_values, contrast_values)
