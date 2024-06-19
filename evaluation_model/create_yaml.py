@@ -23,7 +23,7 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
             
             yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
             with open(yaml_file, 'w') as f:
-                yaml.dump(yaml_content, f)
+                yaml.dump(yaml_content, f, default_flow_style=None, sort_keys=False)
 
 # Créer les fichiers YAML pour chaque ensemble d'images modifiées
 create_yaml_files(output_base_path, brightness_values, contrast_values)
