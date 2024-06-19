@@ -92,7 +92,7 @@ for brightness in brightness_values:
                 boxes = results[0].boxes.xyxy.cpu().numpy()  # Format: (x1, y1, x2, y2)
                 confidences = results[0].boxes.conf.cpu().numpy()
                 class_ids = results[0].boxes.cls.cpu().numpy().astype(int)
-                
+                print(img_file)
                 indices = np.where(confidences >= 0.5)[0]
 
                 # Ajouter les classes détectées à y_pred
