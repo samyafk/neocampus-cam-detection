@@ -1,7 +1,7 @@
 import cv2
 import os
 from ultralytics import YOLO
-
+import numpy as np
 # Charger le modèle YOLOv8
 model = YOLO('/usr/src/ultralytics/videos/trains/train_100_data_mix/train33/weights/best.pt')
 
