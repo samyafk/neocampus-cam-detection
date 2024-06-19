@@ -17,10 +17,9 @@ def create_yaml_files(base_path, brightness_values, contrast_values, class_names
             dataset_path = os.path.join(base_path, output_folder)
             
             yaml_content = {
-                'path': dataset_path,
-                'train': './images',  # Assuming we use the 'images' folder for validation as well
-                'val': './images',
-                'test': './images',
+                'train': '../images',  # Assuming we use the 'images' folder for validation as well
+                'val': '../images',
+                'test': '../images',
                 'nc': len(class_names),
                 'names': class_names
             }
