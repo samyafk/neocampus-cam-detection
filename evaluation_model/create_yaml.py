@@ -22,20 +22,13 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
                 'val': 'images',
                 'test': 'images',
                 'nc': 8,
-                'names': [
-                    SingleQuotedScalarString('bicycle'),
-                    SingleQuotedScalarString('bus'),
-                    SingleQuotedScalarString('car'),
-                    SingleQuotedScalarString('droide'),
-                    SingleQuotedScalarString('motorcycle'),
-                    SingleQuotedScalarString('navette'),
-                    SingleQuotedScalarString('person'),
-                    SingleQuotedScalarString('truck')
-                ]
+                'names': ['bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck']
             }
             
             yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
             os.makedirs(os.path.dirname(yaml_file), exist_ok=True)
+            
+            # Ecrire le contenu YAML
             with open(yaml_file, 'w') as f:
                 yaml.dump(yaml_content, f)
 
@@ -44,9 +37,10 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
                 content = yaml.load(f)
 
             # Reformater la liste des noms en ligne
-            content['names'] = '[' + ', '.join(f"'{name}'" for name in content['names']) + ']'
+            names_list = '[' + ', '.join(f"'{name}'" for name in yaml_content['names']) + ']'
+            content['names'] = names_list
 
-            # Sauvegarder le YAML reformatté
+            # Sauvegarder le YAML reformatté en ligne
             with open(yaml_file, 'w') as f:
                 yaml.dump(content, f)
 
