@@ -134,7 +134,7 @@ while True:
     
     current_time = time.time()
     # Check if one second has passed since the last publication
-    if current_time - last_published_time >= 1:
+    if current_time - last_published_time >= 0.1:
         publish_results(results)
         last_published_time = current_time
     # Check if 15 seconds have passed
