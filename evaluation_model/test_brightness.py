@@ -22,7 +22,7 @@ def adjust_contrast(frame, alpha):
     return frame_contrast
 
 def yolo_detection(frame, model, confidence_threshold=0.5):
-    results = model(frame)[0]
+    results = model(frame)
     boxes = results.boxes.xyxy.numpy()  # Format: (x1, y1, x2, y2)
     confidences = results.boxes.conf.numpy()
     class_ids = results.boxes.cls.numpy().astype(int)
