@@ -1,5 +1,6 @@
 import os
 from ruamel.yaml import YAML
+from ruamel.yaml.scalarstring import SingleQuotedScalarString
 
 output_base_path = "/usr/src/ultralytics/videos/datasets/data_modified"
 brightness_values = [-50, 0, 50]
@@ -21,10 +22,20 @@ def create_yaml_files(base_path, brightness_values, contrast_values):
                 'val': 'images',
                 'test': 'images',
                 'nc': 8,
-                'names': ['bicycle', 'bus', 'car', 'droide', 'motorcycle', 'navette', 'person', 'truck']  # Replace with actual class names
+                'names': [
+                    SingleQuotedScalarString('bicycle'),
+                    SingleQuotedScalarString('bus'),
+                    SingleQuotedScalarString('car'),
+                    SingleQuotedScalarString('droide'),
+                    SingleQuotedScalarString('motorcycle'),
+                    SingleQuotedScalarString('navette'),
+                    SingleQuotedScalarString('person'),
+                    SingleQuotedScalarString('truck')
+                ]
             }
             
             yaml_file = os.path.join(dataset_path, f"{output_folder}.yaml")
+            os.makedirs(os.path.dirname(yaml_file), exist_ok=True)
             with open(yaml_file, 'w') as f:
                 yaml.dump(yaml_content, f)
 
