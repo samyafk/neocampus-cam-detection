@@ -24,7 +24,7 @@ params_path = curr_path + "/params-" + camera_name + "/"
 
 
 # Loading the homography matrix
-with open(params_path + "homographyMatrix_gps.pkl", 'rb') as f:
+with open(params_path + "homographyMatrix.pkl", 'rb') as f:
     H = pickle.load(f)
 
 # Load images

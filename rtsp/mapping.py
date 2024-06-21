@@ -1,6 +1,5 @@
 import numpy as np
 
-
 def transform_point(point, H):
     point_homog = np.array([point[0], point[1], 1], dtype=np.float32).reshape(-1, 1)
     transformed_point = np.dot(H, point_homog)

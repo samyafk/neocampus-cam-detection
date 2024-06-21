@@ -44,7 +44,6 @@
     });
 
     mapMarkers = [];
-    // mapMarkers_person = [];
 
     var source = new EventSource("/messages");
     source.addEventListener(
@@ -57,8 +56,6 @@
           map.removeLayer(mapMarkers[i]);
         }
         for (var key in obj) {
-          // console.log(key + " -> " + key);
-          
 
           var Icon = L.icon({
             iconUrl: "/static/" + obj[key].class + ".png",

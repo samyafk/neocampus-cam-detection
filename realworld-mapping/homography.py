@@ -83,5 +83,5 @@ points_gps_np = np.array(gps_points, dtype=np.float32)
 H, _ = cv.findHomography(points_image_np, points_gps_np)
 
 # Save the homography matrix result for later use
-pickle.dump(H, open( params_path + "homographyMatrix_gps.pkl", "wb" ))
+pickle.dump(H, open( params_path + "homographyMatrix.pkl", "wb" ))
 
