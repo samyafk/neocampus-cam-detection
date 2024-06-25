@@ -29,20 +29,6 @@
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(map);
 
-    var navetteIcon = L.icon({
-      iconUrl: "/static/navette.png",
-
-      iconSize: [50, 50], // size of the icon
-      shadowSize: [50, 64], // size of the shadow
-    });
-
-    var personIcon = L.icon({
-      iconUrl: "/static/car.png",
-
-      iconSize: [50, 50], // size of the icon
-      shadowSize: [50, 64], // size of the shadow
-    });
-
     mapMarkers = [];
 
     var source = new EventSource("/messages");
